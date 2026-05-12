@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import java.net.URI;
 import java.time.Instant;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -24,6 +25,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 @Slf4j
 @SuppressWarnings("PMD.ShortVariable")
+@NoArgsConstructor
 public class GlobalExceptionHandler {
 
   /**
@@ -35,10 +37,12 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(PriceNotFoundException.class)
   public ProblemDetail handlePriceNotFound(
-    final PriceNotFoundException ex,
-    final HttpServletRequest request) {
+      final PriceNotFoundException ex,
+      final HttpServletRequest request) {
 
-    log.warn("Precio no encontrado: {}", ex.getMessage());
+    if (log.isWarnEnabled()) {
+      log.warn("Precio no encontrado: {}", ex.getMessage());
+    }
 
     return buildProblemDetail(
       HttpStatus.NOT_FOUND,
@@ -58,10 +62,12 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   public ProblemDetail handleTypeMismatch(
-    final MethodArgumentTypeMismatchException ex,
-    final HttpServletRequest request) {
+      final MethodArgumentTypeMismatchException ex,
+      final HttpServletRequest request) {
 
-    log.warn("Parámetro inválido: {}", ex.getMessage());
+    if (log.isWarnEnabled()) {
+      log.warn("Parámetro inválido: {}", ex.getMessage());
+    }
 
     return buildProblemDetail(
       HttpStatus.BAD_REQUEST,
@@ -81,10 +87,12 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(ConstraintViolationException.class)
   public ProblemDetail handleConstraintViolation(
-    final ConstraintViolationException ex,
-    final HttpServletRequest request) {
+      final ConstraintViolationException ex,
+      final HttpServletRequest request) {
 
-    log.warn("Violación de validación: {}", ex.getMessage());
+    if (log.isWarnEnabled()) {
+      log.warn("Violación de validación: {}", ex.getMessage());
+    }
 
     return buildProblemDetail(
       HttpStatus.BAD_REQUEST,
@@ -105,7 +113,9 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(Exception.class)
   public ProblemDetail handleGeneralError(final Exception ex, final HttpServletRequest request) {
 
-    log.error("Error inesperado en la aplicación", ex);
+    if (log.isErrorEnabled()) {
+      log.error("Error inesperado en la aplicación", ex);
+    }
 
     return buildProblemDetail(
       HttpStatus.INTERNAL_SERVER_ERROR,
@@ -137,14 +147,13 @@ public class GlobalExceptionHandler {
    * @return instancia de {@link ProblemDetail}
    */
   private ProblemDetail buildProblemDetail(
-    final HttpStatus status,
-    final String title,
-    final String detail,
-    final URI type,
-    final HttpServletRequest request) {
+      final HttpStatus status,
+      final String title,
+      final String detail,
+      final URI type,
+      final HttpServletRequest request) {
 
-    final ProblemDetail problemDetail =
-      ProblemDetail.forStatusAndDetail(status, detail);
+    final ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, detail);
 
     problemDetail.setTitle(title);
     problemDetail.setType(type);

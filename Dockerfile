@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-jammy AS build
+FROM eclipse-temurin:25-jdk AS build
 WORKDIR /app
 LABEL authors="luis"
 
@@ -15,7 +15,7 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests
 
 # ETAPA 2: Imagen de ejecución ligera
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:25-jre
 WORKDIR /app
 
 # Copiar el JAR desde la etapa anterior

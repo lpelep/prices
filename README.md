@@ -11,7 +11,7 @@ El servicio resuelve el reto de negocio de la siguiente manera:
 ---
 
 ## 🛠️ Stack Tecnológico
-- **Core:** Java 21 & Spring Boot 4.0.1 🍃
+- **Core:** Java 25 & Spring Boot 4.0.1 🍃
 - **Persistencia:** Spring Data JPA + H2 (In-memory) 🗄️
 - **Migraciones:** Flyway (Versionado de base de datos) ✈️
 - **Documentación:** Swagger UI / OpenAPI 3 📖
@@ -34,7 +34,7 @@ He optado por una **Arquitectura Hexagonal (Puertos y Adaptadores)** para desaco
 ## 🚥 Guía de Inicio Rápido
 
 ### Requisitos
-* **Java 21**
+* **Java 25**
 * **Maven 3.9+** (o usar el wrapper `./mvnw` incluido)
 
 ### Ejecución en local
@@ -80,7 +80,7 @@ Nota: El archivo `compose.yaml` ya gestiona el mapeo de puertos y el healthcheck
 
 **Ejemplo de consulta (curl)**
 ```bash
-curl --location 'localhost:8080/api/v1/prices?applicationDate=2026-06-14%2010%3A00%3A00&productId=35455&brandId=1'
+curl --location 'localhost:8080/api/v1/prices?applicationDate=2020-06-14%2010%3A00%3A00&productId=35455&brandId=1'
 ```
 
 ### Otros enlaces de interés

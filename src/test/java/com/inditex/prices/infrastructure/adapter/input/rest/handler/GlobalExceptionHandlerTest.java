@@ -26,40 +26,33 @@ class GlobalExceptionHandlerTest {
   void shouldHandlePriceNotFoundException() {
 
     final HttpServletRequest request = mock(HttpServletRequest.class);
-    when(request.getRequestURI()).thenReturn(REQUEST_PATH);
 
     final String errorMessage =
-      "No se encontró precio para el producto 35455, brandId 1 "
-        + "en la fecha 2020-06-14T10:00:00";
+        "No se encontró precio para el producto 35455, brandId 1 en la fecha 2020-06-14T10:00:00";
 
     final PriceNotFoundException exception =
-      new PriceNotFoundException(
-        35455L,
-        1L,
-        "2020-06-14T10:00:00"
-      );
+        new PriceNotFoundException(
+            35455L,
+            1L,
+            "2020-06-14T10:00:00"
+        );
 
-    final ProblemDetail result =
-      handler.handlePriceNotFound(exception, request);
+    when(request.getRequestURI()).thenReturn(REQUEST_PATH);
+
+    final ProblemDetail result = handler.handlePriceNotFound(exception, request);
 
     assertAll(
-      () -> assertThat(result.getStatus())
-        .isEqualTo(HttpStatus.NOT_FOUND.value()),
+        () -> assertThat(result.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value()),
 
-      () -> assertThat(result.getDetail())
-        .isEqualTo(errorMessage),
+        () -> assertThat(result.getDetail()).isEqualTo(errorMessage),
 
-      () -> assertThat(result.getTitle())
-        .isEqualTo("Precio no encontrado"),
+        () -> assertThat(result.getTitle()).isEqualTo("Precio no encontrado"),
 
-      () -> assertThat(result.getType().toString())
-        .isEqualTo("https://api.inditex.com/errors/not-found"),
+        () -> assertThat(result.getType().toString()).isEqualTo("https://api.inditex.com/errors/not-found"),
 
-      () -> assertThat(result.getProperties())
-        .containsKey("timestamp"),
+        () -> assertThat(result.getProperties()).containsKey("timestamp"),
 
-      () -> assertThat(result.getProperties().get("path"))
-        .isEqualTo(REQUEST_PATH)
+        () -> assertThat(result.getProperties().get("path")).isEqualTo(REQUEST_PATH)
     );
   }
 
@@ -68,29 +61,25 @@ class GlobalExceptionHandlerTest {
   void shouldHandleMethodArgumentTypeMismatchException() {
 
     final HttpServletRequest request = mock(HttpServletRequest.class);
-    when(request.getRequestURI()).thenReturn(REQUEST_PATH);
 
     final MethodArgumentTypeMismatchException exception =
-      mock(MethodArgumentTypeMismatchException.class);
+          mock(MethodArgumentTypeMismatchException.class);
 
-    final ProblemDetail result =
-      handler.handleTypeMismatch(exception, request);
+    when(request.getRequestURI()).thenReturn(REQUEST_PATH);
+
+    final ProblemDetail result = handler.handleTypeMismatch(exception, request);
 
     assertAll(
-      () -> assertThat(result.getStatus())
-        .isEqualTo(HttpStatus.BAD_REQUEST.value()),
+        () -> assertThat(result.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
 
-      () -> assertThat(result.getDetail())
-        .isEqualTo("El formato de los parámetros es incorrecto"),
+        () -> assertThat(result.getDetail()).isEqualTo(
+            "El formato de los parámetros es incorrecto"),
 
-      () -> assertThat(result.getTitle())
-        .isEqualTo("Error de validación de parámetros"),
+        () -> assertThat(result.getTitle()).isEqualTo("Error de validación de parámetros"),
 
-      () -> assertThat(result.getProperties())
-        .containsKey("timestamp"),
+        () -> assertThat(result.getProperties()).containsKey("timestamp"),
 
-      () -> assertThat(result.getProperties().get("path"))
-        .isEqualTo(REQUEST_PATH)
+        () -> assertThat(result.getProperties().get("path")).isEqualTo(REQUEST_PATH)
     );
   }
 
@@ -99,32 +88,26 @@ class GlobalExceptionHandlerTest {
   void shouldHandleConstraintViolationException() {
 
     final HttpServletRequest request = mock(HttpServletRequest.class);
-    when(request.getRequestURI()).thenReturn(REQUEST_PATH);
 
     final ConstraintViolationException exception =
-      new ConstraintViolationException("Validation failed", null);
+          new ConstraintViolationException("Validation failed", null);
 
-    final ProblemDetail result =
-      handler.handleConstraintViolation(exception, request);
+    when(request.getRequestURI()).thenReturn(REQUEST_PATH);
+
+    final ProblemDetail result = handler.handleConstraintViolation(exception, request);
 
     assertAll(
-      () -> assertThat(result.getStatus())
-        .isEqualTo(HttpStatus.BAD_REQUEST.value()),
+        () -> assertThat(result.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
 
-      () -> assertThat(result.getDetail())
-        .isEqualTo("Validation failed"),
+        () -> assertThat(result.getDetail()).isEqualTo("Validation failed"),
 
-      () -> assertThat(result.getTitle())
-        .isEqualTo("Error de validación de parámetros"),
+        () -> assertThat(result.getTitle()).isEqualTo("Error de validación de parámetros"),
 
-      () -> assertThat(result.getType().toString())
-        .isEqualTo("https://api.inditex.com/errors/validation"),
+        () -> assertThat(result.getType().toString()).isEqualTo("https://api.inditex.com/errors/validation"),
 
-      () -> assertThat(result.getProperties())
-        .containsKey("timestamp"),
+        () -> assertThat(result.getProperties()).containsKey("timestamp"),
 
-      () -> assertThat(result.getProperties().get("path"))
-        .isEqualTo(REQUEST_PATH)
+        () -> assertThat(result.getProperties().get("path")).isEqualTo(REQUEST_PATH)
     );
   }
 
@@ -133,34 +116,27 @@ class GlobalExceptionHandlerTest {
   void shouldHandleGeneralException() {
 
     final HttpServletRequest request = mock(HttpServletRequest.class);
+
+    final Exception exception = new RuntimeException("Error interno");
+
     when(request.getRequestURI()).thenReturn(REQUEST_PATH);
 
-    final Exception exception =
-      new RuntimeException("Error interno");
-
-    final ProblemDetail result =
-      handler.handleGeneralError(exception, request);
+    final ProblemDetail result = handler.handleGeneralError(exception, request);
 
     assertAll(
-      () -> assertThat(result.getStatus())
-        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value()),
+        () -> assertThat(result.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value()),
 
-      () -> assertThat(result.getDetail())
-        .isEqualTo("Ha ocurrido un error inesperado en el servidor"),
+        () -> assertThat(result.getDetail()).isEqualTo(
+          "Ha ocurrido un error inesperado en el servidor"),
 
-      () -> assertThat(result.getTitle())
-        .isEqualTo("Error interno"),
+        () -> assertThat(result.getTitle()).isEqualTo("Error interno"),
 
-      () -> assertThat(result.getType().toString())
-        .isEqualTo(
-          "https://api.inditex.com/errors/internal-server-error"
-        ),
+        () -> assertThat(result.getType().toString()).isEqualTo(
+            "https://api.inditex.com/errors/internal-server-error"),
 
-      () -> assertThat(result.getProperties())
-        .containsKey("timestamp"),
+        () -> assertThat(result.getProperties()).containsKey("timestamp"),
 
-      () -> assertThat(result.getProperties().get("path"))
-        .isEqualTo(REQUEST_PATH)
+        () -> assertThat(result.getProperties().get("path")).isEqualTo(REQUEST_PATH)
     );
   }
 }
